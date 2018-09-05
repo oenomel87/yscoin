@@ -5,14 +5,24 @@ import com.google.common.hash.Hashing;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BlockChain {
 
+    private static BlockChain blockChain;
     private List<Block> chain;
     private List<Transaction> currentTransactions;
 
-    public BlockChain() {
+    public static BlockChain getInstance() {
+        if(blockChain == null) {
+            blockChain = new BlockChain();
+        }
+        return blockChain;
+    }
+
+    private BlockChain() {
         chain = new ArrayList<>();
         currentTransactions = new ArrayList<>();
     }
@@ -51,15 +61,22 @@ public class BlockChain {
 
     public long proofWork(long lastProof) {
         long proof = 0L;
-        while(!proof(lastProof, proof)) {
+        while(!validProof(lastProof, proof)) {
             proof++;
         }
         return proof;
     }
 
-    public boolean proof(long lastProof, long proof) {
-        String proofStrr = lastProof + "" + proof;
-        String hashed = hash(proofStrr);
+    public boolean validProof(long lastProof, long proof) {
+        String proofStr = lastProof + "" + proof;
+        String hashed = hash(proofStr);
         return hashed.startsWith("0000");
+    }
+
+    public Map<String,Object> getChain() {
+        Map<String,Object> data = new HashMap<>();
+        data.put("chain", chain);
+        data.put("length", chain.size());
+        return data;
     }
 }
