@@ -1,10 +1,13 @@
 package im.yspark.yscoin.module;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 
+@Data
 public class Block {
     private int index;
     private long timestamp;

@@ -4,16 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.hash.Hashing;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BlockChain {
 
     private static BlockChain blockChain;
     private List<Block> chain;
     private List<Transaction> currentTransactions;
+    private String nodeIdentifier;
 
     public static BlockChain getInstance() {
         if(blockChain == null) {
@@ -25,6 +23,7 @@ public class BlockChain {
     private BlockChain() {
         chain = new ArrayList<>();
         currentTransactions = new ArrayList<>();
+        nodeIdentifier = UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     public Block newBlock(int proof) {
@@ -41,9 +40,13 @@ public class BlockChain {
         return block;
     }
 
+    public int newTransaction(Transaction transaction) {
+        currentTransactions.add(transaction);
+        return chain.size();
+    }
+
     public int newTransaction(String sender, String recipient, long amount) {
-        currentTransactions.add(new Transaction(sender, recipient, amount));
-        return this.chain.size();
+        return newTransaction(new Transaction(sender, recipient, amount));
     }
 
     public static String hash(Block block) {
@@ -55,8 +58,8 @@ public class BlockChain {
         return Hashing.sha256().hashString(text, StandardCharsets.UTF_8).toString();
     }
 
-    public void lastBlock() {
-
+    public Block lastBlock() {
+        return chain.get(chain.size() - 1);
     }
 
     public long proofWork(long lastProof) {
@@ -78,5 +81,9 @@ public class BlockChain {
         data.put("chain", chain);
         data.put("length", chain.size());
         return data;
+    }
+
+    public String getNodeIdentifier() {
+        return nodeIdentifier;
     }
 }
