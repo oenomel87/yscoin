@@ -13,4 +13,10 @@ public class Transaction {
         this.recipient = recipient;
         this.amount = amount;
     }
+
+    public Transaction(long amount) {
+        this.recipient = BlockChain.getInstance().getNodeIdentifier();
+        this.amount = amount;
+        this.sender = "";
+    }
 }

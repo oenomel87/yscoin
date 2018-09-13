@@ -59,7 +59,8 @@ public class BlockChain {
     }
 
     public Block lastBlock() {
-        return chain.get(chain.size() - 1);
+        return chain.isEmpty() ? new Block(0, new ArrayList<>(), 0, "")
+                : chain.get(chain.size() - 1);
     }
 
     public long proofWork(long lastProof) {
